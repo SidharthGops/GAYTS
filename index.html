@@ -1,0 +1,2792 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600&display=swap');
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    :root {
+      /* Slate + Indigo light theme */
+      --bg: #f1f5f9;
+      --bg2: #ffffff;
+      --bg3: #f8fafc;
+      --bg4: #e2e8f0;
+      --border: #cbd5e1;
+      --border2: #a5b4fc;
+      --text: #0f172a;
+      --text2: #475569;
+      --text3: #94a3b8;
+      --accent: #4f46e5;
+      --accent2: #6366f1;
+      --accent3: #eef2ff;
+      --green: #059669;
+      --green2: #10b981;
+      --green3: #d1fae5;
+      --red: #dc2626;
+      --red2: #ef4444;
+      --red3: #fee2e2;
+      --amber: #d97706;
+      --amber2: #f59e0b;
+      --amber3: #fef3c7;
+      --blue: #2563eb;
+      --blue2: #3b82f6;
+      --blue3: #dbeafe;
+      --purple: #7c3aed;
+      --purple2: #8b5cf6;
+      --cyan: #0891b2;
+      --cyan2: #06b6d4;
+      --mono: 'Space Mono', monospace;
+      --sans: 'Inter', sans-serif;
+      --radius: 6px;
+      --radius2: 10px;
+      --shadow: 0 1px 3px rgba(0, 0, 0, .07), 0 1px 2px rgba(0, 0, 0, .05);
+      --shadow2: 0 4px 12px rgba(0, 0, 0, .08);
+    }
+
+    body {
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--text);
+      font-size: 13px;
+      line-height: 1.5;
+      min-height: 100vh
+    }
+
+    /* NAV */
+    .nav {
+      display: flex;
+      align-items: center;
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      padding: 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      overflow-x: auto;
+      box-shadow: var(--shadow)
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 18px;
+      border-right: 1px solid var(--border);
+      flex-shrink: 0
+    }
+
+    .nav-brand .logo {
+      width: 30px;
+      height: 30px;
+      background: var(--accent);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px
+    }
+
+    .nav-brand .brand-name {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text)
+    }
+
+    .nav-brand .brand-ver {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--accent);
+      letter-spacing: 1px
+    }
+
+    .nav-tabs {
+      display: flex;
+      overflow-x: auto
+    }
+
+    .nav-tab {
+      padding: 11px 15px;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text3);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      white-space: nowrap;
+      transition: all .2s;
+      letter-spacing: .2px
+    }
+
+    .nav-tab:hover {
+      color: var(--text2);
+      background: var(--bg3)
+    }
+
+    .nav-tab.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+      background: var(--accent3)
+    }
+
+    .nav-status {
+      margin-left: auto;
+      padding: 8px 16px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--green2);
+      animation: pulse 2s infinite
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, .4)
+      }
+
+      50% {
+        opacity: .8;
+        box-shadow: 0 0 0 4px rgba(16, 185, 129, 0)
+      }
+    }
+
+    /* LAYOUT */
+    .page {
+      display: none;
+      padding: 18px
+    }
+
+    .page.active {
+      display: block
+    }
+
+    /* GRID */
+    .grid2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px
+    }
+
+    .grid3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 14px
+    }
+
+    .grid4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px
+    }
+
+    /* CARDS */
+    .card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius2);
+      padding: 16px;
+      box-shadow: var(--shadow)
+    }
+
+    .card-title {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text3);
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      margin-bottom: 13px;
+      display: flex;
+      align-items: center;
+      gap: 6px
+    }
+
+    /* STAT CARDS */
+    .stat-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius2);
+      padding: 16px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow)
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px
+    }
+
+    .stat-card.indigo::before {
+      background: var(--accent)
+    }
+
+    .stat-card.green::before {
+      background: var(--green2)
+    }
+
+    .stat-card.red::before {
+      background: var(--red2)
+    }
+
+    .stat-card.amber::before {
+      background: var(--amber2)
+    }
+
+    .stat-label {
+      font-size: 10px;
+      color: var(--text3);
+      letter-spacing: .8px;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+      font-weight: 600
+    }
+
+    .stat-val {
+      font-family: var(--mono);
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--text)
+    }
+
+    .stat-sub {
+      font-size: 11px;
+      color: var(--text3);
+      margin-top: 3px
+    }
+
+    .stat-icon {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      font-size: 22px;
+      opacity: .15
+    }
+
+    /* CAMERA FEEDS */
+    .cam-feed {
+      background: #0f172a;
+      border: 1px solid var(--border);
+      border-radius: var(--radius2);
+      overflow: hidden;
+      position: relative;
+      aspect-ratio: 16/9
+    }
+
+    .cam-feed-body {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 11px;
+      color: #64748b
+    }
+
+    .cam-overlay {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      right: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start
+    }
+
+    .cam-badge {
+      font-family: var(--mono);
+      font-size: 9px;
+      background: rgba(0, 0, 0, .75);
+      border: 1px solid rgba(99, 102, 241, .4);
+      padding: 3px 7px;
+      border-radius: 3px;
+      color: #a5b4fc
+    }
+
+    .cam-live {
+      font-size: 9px;
+      background: rgba(220, 38, 38, .2);
+      border: 1px solid rgba(220, 38, 38, .5);
+      padding: 3px 7px;
+      border-radius: 3px;
+      color: #fca5a5;
+      display: flex;
+      align-items: center;
+      gap: 4px
+    }
+
+    .cam-live::before {
+      content: '';
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: #f87171;
+      display: inline-block;
+      animation: pulse 1s infinite
+    }
+
+    /* PLATE */
+    .plate {
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 700;
+      background: #fff;
+      color: #111;
+      padding: 3px 8px;
+      border-radius: 3px;
+      border: 2px solid #1e3a8a;
+      letter-spacing: 2px;
+      display: inline-block;
+      position: relative
+    }
+
+    .plate::before {
+      content: 'IND';
+      position: absolute;
+      top: -7px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 6px;
+      background: #1e3a8a;
+      color: #fff;
+      padding: 1px 4px;
+      border-radius: 1px
+    }
+
+    /* BADGES */
+    .badge {
+      font-size: 9px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 4px;
+      letter-spacing: .5px;
+      font-family: var(--mono);
+      display: inline-block
+    }
+
+    .badge.auth {
+      background: var(--green3);
+      color: var(--green);
+      border: 1px solid rgba(16, 185, 129, .25)
+    }
+
+    .badge.deny {
+      background: var(--red3);
+      color: var(--red);
+      border: 1px solid rgba(220, 38, 38, .25)
+    }
+
+    .badge.pending {
+      background: var(--amber3);
+      color: var(--amber);
+      border: 1px solid rgba(217, 119, 6, .25)
+    }
+
+    .badge.info {
+      background: var(--blue3);
+      color: var(--blue);
+      border: 1px solid rgba(37, 99, 235, .25)
+    }
+
+    /* TABLE */
+    .tbl {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px
+    }
+
+    .tbl th {
+      text-align: left;
+      padding: 7px 10px;
+      font-size: 9px;
+      color: var(--text3);
+      letter-spacing: .8px;
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--border);
+      font-weight: 600;
+      background: var(--bg3)
+    }
+
+    .tbl td {
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle
+    }
+
+    .tbl tr:hover td {
+      background: var(--accent3)
+    }
+
+    .tbl tr:last-child td {
+      border-bottom: none
+    }
+
+    /* GATE */
+    .gate-card {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius2);
+      padding: 14px;
+      text-align: center
+    }
+
+    .gate-visual {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      margin: 0 auto 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      border: 2px solid;
+      transition: all .5s
+    }
+
+    .gate-visual.open {
+      border-color: var(--green2);
+      background: var(--green3);
+      box-shadow: 0 0 16px rgba(16, 185, 129, .2)
+    }
+
+    .gate-visual.closed {
+      border-color: var(--border2);
+      background: var(--bg4)
+    }
+
+    .gate-visual.alert {
+      border-color: var(--red2);
+      background: var(--red3);
+      animation: alertPulse 1s infinite
+    }
+
+    @keyframes alertPulse {
+
+      0%,
+      100% {
+        box-shadow: 0 0 0 0 rgba(220, 38, 38, .4)
+      }
+
+      50% {
+        box-shadow: 0 0 0 8px rgba(220, 38, 38, 0)
+      }
+    }
+
+    .gate-label {
+      font-size: 10px;
+      color: var(--text3);
+      font-weight: 600;
+      letter-spacing: .6px;
+      text-transform: uppercase
+    }
+
+    .gate-status {
+      font-family: var(--mono);
+      font-size: 11px;
+      margin-top: 3px;
+      font-weight: 700
+    }
+
+    .gate-btn {
+      margin-top: 8px;
+      padding: 5px 12px;
+      border-radius: 4px;
+      border: 1px solid;
+      font-size: 10px;
+      font-family: var(--mono);
+      cursor: pointer;
+      font-weight: 700;
+      letter-spacing: .5px;
+      transition: all .2s
+    }
+
+    .gate-btn.open {
+      border-color: var(--green2);
+      color: var(--green);
+      background: var(--green3)
+    }
+
+    .gate-btn.open:hover {
+      background: rgba(16, 185, 129, .2)
+    }
+
+    .gate-btn.close {
+      border-color: var(--red2);
+      color: var(--red);
+      background: var(--red3)
+    }
+
+    .gate-btn.close:hover {
+      background: rgba(220, 38, 38, .15)
+    }
+
+    /* ALERTS */
+    .alert-item {
+      border-left: 3px solid;
+      padding: 10px 12px;
+      border-radius: 0 var(--radius) var(--radius) 0;
+      margin-bottom: 8px;
+      background: var(--bg3);
+      border-top: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border)
+    }
+
+    .alert-item.high {
+      border-left-color: var(--red2)
+    }
+
+    .alert-item.medium {
+      border-left-color: var(--amber2)
+    }
+
+    .alert-item.low {
+      border-left-color: var(--blue2)
+    }
+
+    .alert-time {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--text3)
+    }
+
+    .alert-msg {
+      font-size: 12px;
+      color: var(--text);
+      margin: 2px 0
+    }
+
+    .alert-plate {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent)
+    }
+
+    /* CODE */
+    .code-block {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: var(--radius2);
+      padding: 14px;
+      overflow-x: auto;
+      font-family: var(--mono);
+      font-size: 11px;
+      line-height: 1.7;
+      color: #cbd5e1
+    }
+
+    .code-block .kw {
+      color: #f472b6
+    }
+
+    .code-block .str {
+      color: #86efac
+    }
+
+    .code-block .fn {
+      color: #c4b5fd
+    }
+
+    .code-block .cm {
+      color: #64748b;
+      font-style: italic
+    }
+
+    .code-block .nb {
+      color: #7dd3fc
+    }
+
+    /* SCHEMA */
+    .schema-table {
+      margin-bottom: 16px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius2);
+      overflow: hidden;
+      box-shadow: var(--shadow)
+    }
+
+    .schema-header {
+      background: var(--accent3);
+      padding: 9px 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid var(--border2)
+    }
+
+    .schema-name {
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--accent)
+    }
+
+    .schema-body {
+      padding: 0;
+      background: var(--bg2)
+    }
+
+    .schema-row {
+      display: grid;
+      grid-template-columns: 150px 110px 60px 1fr;
+      gap: 8px;
+      padding: 7px 12px;
+      border-bottom: 1px solid var(--border);
+      align-items: center;
+      font-size: 11px
+    }
+
+    .schema-row:last-child {
+      border-bottom: none
+    }
+
+    .schema-row.header {
+      background: var(--bg3);
+      font-size: 9px;
+      color: var(--text3);
+      letter-spacing: .8px;
+      text-transform: uppercase;
+      font-weight: 600;
+      padding: 6px 12px
+    }
+
+    .type-tag {
+      font-family: var(--mono);
+      font-size: 9px;
+      color: var(--cyan);
+      background: rgba(8, 145, 178, .08);
+      padding: 1px 6px;
+      border-radius: 3px;
+      border: 1px solid rgba(8, 145, 178, .2)
+    }
+
+    .pk-tag {
+      font-size: 9px;
+      color: var(--accent);
+      background: var(--accent3);
+      padding: 1px 6px;
+      border-radius: 3px;
+      border: 1px solid var(--border2);
+      font-family: var(--mono)
+    }
+
+    .fk-tag {
+      font-size: 9px;
+      color: var(--purple);
+      background: rgba(124, 58, 237, .08);
+      padding: 1px 6px;
+      border-radius: 3px;
+      border: 1px solid rgba(124, 58, 237, .2);
+      font-family: var(--mono)
+    }
+
+    /* PIPELINE */
+    .pipe-step {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 14px;
+      align-items: flex-start
+    }
+
+    .pipe-num {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--accent3);
+      border: 1px solid var(--border2);
+      color: var(--accent);
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0
+    }
+
+    .pipe-content {
+      flex: 1
+    }
+
+    .pipe-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 3px
+    }
+
+    .pipe-desc {
+      font-size: 11px;
+      color: var(--text2);
+      line-height: 1.6
+    }
+
+    .pipe-tech {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+      margin-top: 6px
+    }
+
+    .tech-tag {
+      font-size: 9px;
+      font-family: var(--mono);
+      padding: 2px 6px;
+      border-radius: 3px;
+      background: var(--blue3);
+      color: var(--blue);
+      border: 1px solid rgba(37, 99, 235, .2)
+    }
+
+    /* FOLDER */
+    .folder {
+      font-family: var(--mono);
+      font-size: 11px;
+      line-height: 2;
+      color: var(--text2)
+    }
+
+    .folder .dir {
+      color: var(--accent)
+    }
+
+    .folder .file {
+      color: var(--blue2)
+    }
+
+    .folder .cm {
+      color: var(--text3);
+      font-size: 10px
+    }
+
+    /* TABS */
+    .sub-tabs {
+      display: flex;
+      gap: 2px;
+      margin-bottom: 14px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius2);
+      padding: 3px
+    }
+
+    .sub-tab {
+      padding: 5px 13px;
+      border-radius: 6px;
+      font-size: 11px;
+      cursor: pointer;
+      color: var(--text3);
+      transition: all .2s;
+      font-weight: 500
+    }
+
+    .sub-tab.active {
+      background: var(--bg2);
+      color: var(--accent);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow)
+    }
+
+    /* PROGRESS */
+    .prog-bar {
+      height: 5px;
+      background: var(--bg4);
+      border-radius: 3px;
+      overflow: hidden;
+      margin-top: 4px
+    }
+
+    .prog-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 1s ease
+    }
+
+    /* LIVE UPDATE */
+    .live-event {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 9px 11px;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--bg2);
+      transition: all .3s;
+      animation: slideIn .3s ease;
+      box-shadow: var(--shadow)
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-8px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    /* SECTION HEADER */
+    .sec-header {
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border)
+    }
+
+    .sec-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 2px
+    }
+
+    .sec-sub {
+      font-size: 11px;
+      color: var(--text3)
+    }
+
+    /* SCROLLBAR */
+    ::-webkit-scrollbar {
+      width: 4px;
+      height: 4px
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--bg)
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--border2);
+      border-radius: 2px
+    }
+
+    /* API */
+    .api-endpoint {
+      border: 1px solid var(--border);
+      border-radius: var(--radius2);
+      margin-bottom: 10px;
+      overflow: hidden;
+      box-shadow: var(--shadow)
+    }
+
+    .api-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 12px;
+      background: var(--bg3);
+      cursor: pointer
+    }
+
+    .api-header:hover {
+      background: var(--accent3)
+    }
+
+    .method-badge {
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 3px;
+      width: 48px;
+      text-align: center
+    }
+
+    .method-badge.GET {
+      background: var(--green3);
+      color: var(--green);
+      border: 1px solid rgba(5, 150, 105, .25)
+    }
+
+    .method-badge.POST {
+      background: var(--blue3);
+      color: var(--blue);
+      border: 1px solid rgba(37, 99, 235, .25)
+    }
+
+    .method-badge.PUT {
+      background: var(--amber3);
+      color: var(--amber);
+      border: 1px solid rgba(217, 119, 6, .25)
+    }
+
+    .method-badge.DELETE {
+      background: var(--red3);
+      color: var(--red);
+      border: 1px solid rgba(220, 38, 38, .25)
+    }
+
+    .api-path {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text)
+    }
+
+    .api-desc {
+      font-size: 11px;
+      color: var(--text3);
+      margin-left: auto
+    }
+
+    .api-body {
+      padding: 12px;
+      border-top: 1px solid var(--border);
+      display: none;
+      background: var(--bg2)
+    }
+
+    .api-body.open {
+      display: block
+    }
+
+    /* IMPL STEPS */
+    .impl-step {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius2);
+      padding: 14px;
+      margin-bottom: 10px;
+      box-shadow: var(--shadow)
+    }
+
+    .impl-step-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px
+    }
+
+    .impl-num {
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 700;
+      color: #fff;
+      background: var(--accent);
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0
+    }
+
+    .impl-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text)
+    }
+
+    /* CHART */
+    .bar-chart {
+      display: flex;
+      align-items: flex-end;
+      gap: 4px;
+      height: 80px;
+      padding-top: 8px
+    }
+
+    .bar {
+      flex: 1;
+      border-radius: 3px 3px 0 0;
+      min-width: 8px;
+      transition: height .8s ease;
+      cursor: pointer
+    }
+
+    .bar:hover {
+      opacity: .75
+    }
+
+    .bar.auth {
+      background: var(--green2)
+    }
+
+    .bar.deny {
+      background: var(--red2)
+    }
+
+    /* INPUT */
+    input[type=text],
+    select {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 7px 10px;
+      border-radius: var(--radius);
+      font-size: 11px;
+      font-family: var(--sans);
+      outline: none;
+      width: 100%;
+      transition: border .2s
+    }
+
+    input[type=text]:focus,
+    select:focus {
+      border-color: var(--accent2);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, .1)
+    }
+
+    .btn {
+      padding: 7px 14px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      color: var(--text2);
+      background: var(--bg2);
+      font-size: 11px;
+      cursor: pointer;
+      font-family: var(--sans);
+      font-weight: 500;
+      transition: all .2s;
+      box-shadow: var(--shadow)
+    }
+
+    .btn:hover {
+      border-color: var(--accent2);
+      color: var(--accent);
+      background: var(--accent3)
+    }
+
+    .btn.primary {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+      font-weight: 600
+    }
+
+    .btn.primary:hover {
+      background: var(--accent2)
+    }
+
+    .btn.danger {
+      background: var(--red3);
+      color: var(--red);
+      border-color: rgba(220, 38, 38, .3)
+    }
+
+    .btn.danger:hover {
+      background: rgba(220, 38, 38, .15)
+    }
+
+    .flex {
+      display: flex;
+      gap: 8px;
+      align-items: center
+    }
+
+    .flex-wrap {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      align-items: center
+    }
+
+    /* CONF METER */
+    .conf-meter {
+      display: flex;
+      gap: 2px;
+      margin-top: 3px
+    }
+
+    .conf-seg {
+      height: 4px;
+      flex: 1;
+      border-radius: 1px;
+      background: rgba(255, 255, 255, .1);
+      transition: background .5s
+    }
+
+    .conf-seg.fill {
+      background: var(--green2)
+    }
+
+    .conf-seg.fill.med {
+      background: var(--amber2)
+    }
+
+    .conf-seg.fill.low {
+      background: var(--red2)
+    }
+
+    /* WHITELIST MANAGER */
+    .wl-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 9px 12px;
+      border-bottom: 1px solid var(--border);
+      font-size: 12px
+    }
+
+    .wl-row:last-child {
+      border-bottom: none
+    }
+
+    .wl-row:hover {
+      background: var(--accent3)
+    }
+
+    /* SNAPSHOT */
+    .snap-thumb {
+      width: 64px;
+      height: 40px;
+      background: var(--bg4);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0
+    }
+
+    /* FUTURE CARDS */
+    .future-card {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 10px 12px;
+      font-size: 11px
+    }
+
+    .future-card-title {
+      color: var(--accent);
+      font-weight: 600;
+      margin-bottom: 3px
+    }
+
+    .future-card-sub {
+      color: var(--text3)
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="nav">
+    <div class="nav-brand">
+      <div class="logo">🔒</div>
+      <div>
+        <div class="brand-name">GAYTS</div>
+        <div class="brand-ver">v0.0.1</div>
+      </div>
+    </div>
+    <div class="nav-tabs">
+      <div class="nav-tab active" onclick="showPage('dashboard',this)">📊 Dashboard</div>
+      <div class="nav-tab" onclick="showPage('logs',this)">📋 Gate Logs</div>
+      <div class="nav-tab" onclick="showPage('alerts',this)">🚨 Alerts</div>
+      <div class="nav-tab" onclick="showPage('whitelist',this)">🚗 Whitelist</div>
+      <div class="nav-tab" onclick="showPage('schema',this)">🗄️ DB Schema</div>
+      <div class="nav-tab" onclick="showPage('api',this)">🔌 API Docs</div>
+      <div class="nav-tab" onclick="showPage('pipeline',this)">🤖 AI Pipeline</div>
+      <div class="nav-tab" onclick="showPage('structure',this)">📁 Project</div>
+      <div class="nav-tab" onclick="showPage('impl',this)">📖 Guide</div>
+    </div>
+    <div class="nav-status">
+      <div class="status-dot"></div>
+      <span style="font-size:10px;color:var(--text3);font-family:var(--mono)">LIVE</span>
+      <span style="font-size:10px;color:var(--text3);margin-left:4px" id="clock"></span>
+    </div>
+  </div>
+
+  <!-- ====== DASHBOARD ====== -->
+  <div class="page active" id="page-dashboard">
+
+    <!-- STAT CARDS — only metrics that come from your actual DB -->
+    <div class="grid4" style="margin-bottom:14px">
+      <div class="stat-card indigo">
+        <div class="stat-icon">🗂️</div>
+        <div class="stat-label">Total Logs</div>
+        <div class="stat-val" id="stat-entries">247</div>
+        <div class="stat-sub">All gate detections</div>
+      </div>
+      <div class="stat-card green">
+        <div class="stat-icon">✅</div>
+        <div class="stat-label">Authorized</div>
+        <div class="stat-val" id="stat-auth">231</div>
+        <div class="stat-sub">Whitelisted vehicles</div>
+      </div>
+      <div class="stat-card red">
+        <div class="stat-icon">🚫</div>
+        <div class="stat-label">Unauthorized</div>
+        <div class="stat-val" id="stat-deny">16</div>
+        <div class="stat-sub">Not in whitelist</div>
+      </div>
+      <div class="stat-card amber">
+        <div class="stat-icon">🚗</div>
+        <div class="stat-label">Registered Plates</div>
+        <div class="stat-val" id="stat-vehicles">42</div>
+        <div class="stat-sub">In whitelist</div>
+      </div>
+    </div>
+
+    <div class="grid2" style="margin-bottom:14px">
+      <!-- Camera Feed -->
+      <div class="card">
+        <div class="card-title">📷 LIVE CAMERA FEED</div>
+        <div class="grid2" style="gap:8px">
+          <div class="cam-feed" id="cam1">
+            <div class="cam-overlay">
+              <span class="cam-badge">CAM-01 / MAIN GATE</span>
+              <span class="cam-live">LIVE</span>
+            </div>
+            <div class="cam-feed-body">
+              <div style="font-size:30px">🚗</div>
+              <div id="cam1-plate" style="font-family:var(--mono);font-size:11px;color:#a5b4fc;margin-top:4px"></div>
+              <div id="cam1-status" style="font-size:10px;color:#64748b">Scanning...</div>
+            </div>
+            <div style="position:absolute;bottom:8px;left:8px;right:8px">
+              <div style="font-size:9px;color:#64748b;font-family:var(--mono);margin-bottom:2px">OCR CONFIDENCE</div>
+              <div class="conf-meter" id="cam1-conf">
+                <div class="conf-seg"></div>
+                <div class="conf-seg"></div>
+                <div class="conf-seg"></div>
+                <div class="conf-seg"></div>
+                <div class="conf-seg"></div>
+                <div class="conf-seg"></div>
+                <div class="conf-seg"></div>
+                <div class="conf-seg"></div>
+                <div class="conf-seg"></div>
+                <div class="conf-seg"></div>
+              </div>
+            </div>
+          </div>
+          <div class="cam-feed" id="cam2">
+            <div class="cam-overlay">
+              <span class="cam-badge">CAM-02 / ENTRY</span>
+              <span class="cam-live">LIVE</span>
+            </div>
+            <div class="cam-feed-body">
+              <div style="font-size:30px">🚙</div>
+              <div id="cam2-plate" style="font-family:var(--mono);font-size:11px;color:#86efac;margin-top:4px"></div>
+              <div id="cam2-status" style="font-size:10px;color:#64748b">Idle</div>
+            </div>
+            <div style="position:absolute;bottom:8px;left:8px;right:8px">
+              <div style="font-size:9px;color:#64748b;font-family:var(--mono);margin-bottom:2px">OCR CONFIDENCE</div>
+              <div class="conf-meter" id="cam2-conf">
+                <div class="conf-seg"></div>
+                <div class="conf-seg"></div>
+                <div class="conf-seg"></div>
+                <div class="conf-seg"></div>
+                <div class="conf-seg"></div>
+                <div class="conf-seg"></div>
+                <div class="conf-seg"></div>
+                <div class="conf-seg"></div>
+                <div class="conf-seg"></div>
+                <div class="conf-seg"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gate Control + Manual Lookup -->
+      <div class="card">
+        <div class="card-title">🔒 GATE SIMULATION</div>
+        <div class="grid2" style="gap:8px;margin-bottom:12px">
+          <div class="gate-card">
+            <div class="gate-visual open" id="gate1-vis">🔓</div>
+            <div class="gate-label">Main Gate</div>
+            <div class="gate-status" id="gate1-status" style="color:var(--green)">OPEN</div>
+            <button class="gate-btn close" onclick="toggleGate(1)">CLOSE</button>
+          </div>
+          <div class="gate-card">
+            <div class="gate-visual closed" id="gate2-vis">🔒</div>
+            <div class="gate-label">Side Gate</div>
+            <div class="gate-status" id="gate2-status" style="color:var(--text3)">CLOSED</div>
+            <button class="gate-btn open" onclick="toggleGate(2)">OPEN</button>
+          </div>
+        </div>
+        <div style="border-top:1px solid var(--border);padding-top:12px">
+          <div
+            style="font-size:10px;font-weight:600;color:var(--text3);margin-bottom:7px;letter-spacing:.5px;text-transform:uppercase">
+            ⚡ Manual Plate Lookup</div>
+          <div class="flex">
+            <input type="text" id="manualPlate" placeholder="KL07BH1234" style="flex:1;font-family:var(--mono)">
+            <button class="btn primary" onclick="manualLookup()">CHECK</button>
+          </div>
+          <div id="lookup-result" style="margin-top:8px;font-size:11px"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid2">
+      <!-- Live Detection Feed -->
+      <div class="card">
+        <div class="card-title">⚡ LIVE DETECTION FEED</div>
+        <div id="live-events" style="max-height:230px;overflow-y:auto"></div>
+      </div>
+      <!-- Traffic Chart -->
+      <div class="card">
+        <div class="card-title">📈 HOURLY DETECTIONS (TODAY)</div>
+        <div class="bar-chart" id="traffic-chart"></div>
+        <div
+          style="display:flex;justify-content:space-between;font-size:9px;color:var(--text3);margin-top:5px;font-family:var(--mono)">
+          <span>00</span><span>03</span><span>06</span><span>09</span><span>12</span><span>15</span><span>18</span><span>21</span>
+        </div>
+        <div class="flex-wrap" style="margin-top:10px;gap:12px">
+          <div class="flex" style="gap:5px">
+            <div style="width:10px;height:10px;background:var(--green2);border-radius:2px"></div><span
+              style="font-size:10px;color:var(--text3)">Authorized</span>
+          </div>
+          <div class="flex" style="gap:5px">
+            <div style="width:10px;height:10px;background:var(--red2);border-radius:2px"></div><span
+              style="font-size:10px;color:var(--text3)">Unauthorized</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== GATE LOGS ====== -->
+  <div class="page" id="page-logs">
+    <div class="sec-header">
+      <div class="sec-title">Gate Logs</div>
+      <div class="sec-sub">Every detection attempt recorded automatically — authorized and unauthorized</div>
+    </div>
+    <div class="card" style="margin-bottom:12px">
+      <div class="flex" style="gap:8px;flex-wrap:wrap">
+        <input type="text" id="search-plate" placeholder="Search plate..." style="width:180px;font-family:var(--mono)"
+          oninput="filterLogs()">
+        <select id="filter-status" style="width:150px" onchange="filterLogs()">
+          <option value="">All Status</option>
+          <option value="AUTHORIZED">Authorized</option>
+          <option value="UNAUTHORIZED">Unauthorized</option>
+        </select>
+        <input type="text" id="filter-date" placeholder="Date (YYYY-MM-DD)" style="width:170px" oninput="filterLogs()">
+        <button class="btn primary" onclick="filterLogs()">Search</button>
+        <button class="btn" onclick="exportLogs()">⬇ Export CSV</button>
+      </div>
+    </div>
+    <div class="card" style="padding:0;overflow:hidden">
+      <table class="tbl" id="logs-table">
+        <thead>
+          <tr>
+            <th>Timestamp</th>
+            <th>Plate No.</th>
+            <th>Status</th>
+            <th>OCR Confidence</th>
+            <th>Snapshot</th>
+          </tr>
+        </thead>
+        <tbody id="logs-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ====== ALERTS ====== -->
+  <div class="page" id="page-alerts">
+    <div class="sec-header">
+      <div class="sec-title">Security Alerts</div>
+      <div class="sec-sub">Unauthorized vehicle attempts flagged in real-time</div>
+    </div>
+    <div class="grid2" style="margin-bottom:14px">
+      <div class="card">
+        <div class="card-title" style="color:var(--red)">🚨 ACTIVE ALERTS</div>
+        <div id="active-alerts"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">⚙️ ALERT RULES</div>
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th>Rule</th>
+              <th>Trigger</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Unknown Vehicle</td>
+              <td>Not in whitelist</td>
+              <td><span class="badge auth">ACTIVE</span></td>
+            </tr>
+            <tr>
+              <td>Repeated Attempts</td>
+              <td>3+ in 10 minutes</td>
+              <td><span class="badge auth">ACTIVE</span></td>
+            </tr>
+            <tr>
+              <td>After-hours Entry</td>
+              <td>22:00 – 06:00</td>
+              <td><span class="badge auth">ACTIVE</span></td>
+            </tr>
+            <tr>
+              <td>Low OCR Confidence</td>
+              <td>&lt; 60% confidence</td>
+              <td><span class="badge auth">ACTIVE</span></td>
+            </tr>
+            <tr>
+              <td>Gate Forced Open</td>
+              <td>Sensor mismatch</td>
+              <td><span class="badge pending">TESTING</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">🕐 ALERT HISTORY (LAST 24H)</div>
+      <div id="alert-history"></div>
+    </div>
+  </div>
+
+  <!-- ====== WHITELIST MANAGER ====== -->
+  <div class="page" id="page-whitelist">
+    <div class="sec-header">
+      <div class="sec-title">Whitelist Manager</div>
+      <div class="sec-sub">Vehicles in this list are authorized — all others are denied</div>
+    </div>
+    <div class="card" style="margin-bottom:14px">
+      <div class="card-title">➕ ADD PLATE TO WHITELIST</div>
+      <div class="flex" style="gap:8px">
+        <input type="text" id="new-plate" placeholder="e.g. KL07BH1234"
+          style="max-width:250px;font-family:var(--mono);text-transform:uppercase">
+        <button class="btn primary" onclick="addPlate()">Add Plate</button>
+      </div>
+      <div id="add-result" style="margin-top:8px;font-size:11px"></div>
+    </div>
+    <div class="card" style="padding:0;overflow:hidden">
+      <div
+        style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-bottom:1px solid var(--border);background:var(--bg3)">
+        <div style="font-size:10px;font-weight:600;color:var(--text3);letter-spacing:.8px;text-transform:uppercase">
+          Registered Plates</div>
+        <span class="badge info" id="wl-count">42 plates</span>
+      </div>
+      <div id="whitelist-body"></div>
+    </div>
+  </div>
+
+  <!-- ====== DB SCHEMA ====== -->
+  <div class="page" id="page-schema">
+    <div class="sec-header">
+      <div class="sec-title">PostgreSQL Database Schema</div>
+      <div class="sec-sub">Two-table design — vehicles (whitelist) + gate_logs (every detection)</div>
+    </div>
+    <div class="grid2">
+      <div>
+        <!-- VEHICLES -->
+        <div class="schema-table">
+          <div class="schema-header">
+            <span class="schema-name">vehicles</span>
+            <span style="font-size:10px;color:var(--text3);margin-left:auto">Authorized plate whitelist</span>
+          </div>
+          <div class="schema-body">
+            <div class="schema-row header"><span>Column</span><span>Type</span><span>Key</span><span>Description</span>
+            </div>
+            <div class="schema-row">
+              <span style="font-family:var(--mono);color:var(--text)">id</span>
+              <span class="type-tag">SERIAL</span>
+              <span class="pk-tag">PK</span>
+              <span style="color:var(--text3)">Auto-increment primary key</span>
+            </div>
+            <div class="schema-row">
+              <span style="font-family:var(--mono);color:var(--text)">plate_number</span>
+              <span class="type-tag">VARCHAR(20)</span>
+              <span></span>
+              <span style="color:var(--text3)">Unique, indexed, uppercase</span>
+            </div>
+            <div class="schema-row">
+              <span style="font-family:var(--mono);color:var(--text)">registered_at</span>
+              <span class="type-tag">TIMESTAMP</span>
+              <span></span>
+              <span style="color:var(--text3)">Auto-set on insert</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- GATE LOGS -->
+        <div class="schema-table">
+          <div class="schema-header">
+            <span class="schema-name">gate_logs</span>
+            <span style="font-size:10px;color:var(--text3);margin-left:auto">Automatic detection logbook</span>
+          </div>
+          <div class="schema-body">
+            <div class="schema-row header"><span>Column</span><span>Type</span><span>Key</span><span>Description</span>
+            </div>
+            <div class="schema-row">
+              <span style="font-family:var(--mono);color:var(--text)">id</span>
+              <span class="type-tag">SERIAL</span>
+              <span class="pk-tag">PK</span>
+              <span style="color:var(--text3)">Auto-increment primary key</span>
+            </div>
+            <div class="schema-row">
+              <span style="font-family:var(--mono);color:var(--text)">plate_number</span>
+              <span class="type-tag">VARCHAR(20)</span>
+              <span></span>
+              <span style="color:var(--text3)">OCR output — raw detected plate</span>
+            </div>
+            <div class="schema-row">
+              <span style="font-family:var(--mono);color:var(--text)">status</span>
+              <span class="type-tag">VARCHAR(15)</span>
+              <span></span>
+              <span style="color:var(--text3)">AUTHORIZED or UNAUTHORIZED</span>
+            </div>
+            <div class="schema-row">
+              <span style="font-family:var(--mono);color:var(--text)">confidence_score</span>
+              <span class="type-tag">FLOAT</span>
+              <span></span>
+              <span style="color:var(--text3)">OCR confidence 0.0–1.0</span>
+            </div>
+            <div class="schema-row">
+              <span style="font-family:var(--mono);color:var(--text)">snapshot_path</span>
+              <span class="type-tag">TEXT</span>
+              <span></span>
+              <span style="color:var(--text3)">Saved frame file path</span>
+            </div>
+            <div class="schema-row">
+              <span style="font-family:var(--mono);color:var(--text)">timestamp</span>
+              <span class="type-tag">TIMESTAMP</span>
+              <span></span>
+              <span style="color:var(--text3)">Auto-set on insert (IST)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- HOW IT WORKS -->
+        <div class="card" style="border-left:3px solid var(--accent)">
+          <div class="card-title">🔁 AUTHORIZATION LOGIC</div>
+          <div class="code-block" style="font-size:10.5px">
+            <span class="cm"># For every OCR detection:</span>
+            <span class="kw">vehicle</span> = SELECT * FROM vehicles
+            WHERE plate_number = <span class="str">'KL07BH1234'</span>
+
+            <span class="kw">if</span> vehicle:
+            status = <span class="str">"AUTHORIZED"</span> <span class="cm"># in whitelist ✓</span>
+            <span class="kw">else</span>:
+            status = <span class="str">"UNAUTHORIZED"</span> <span class="cm"># not in whitelist ✗</span>
+
+            <span class="cm"># Both cases → INSERT into gate_logs</span>
+            <span class="cm"># Unauthorized: snapshot saved, alert raised</span>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <!-- RELATIONSHIP -->
+        <div class="card" style="margin-bottom:16px">
+          <div class="card-title">🔗 TABLE RELATIONSHIP</div>
+          <div style="font-size:11px;color:var(--text2);line-height:1.9">
+            <div
+              style="background:var(--accent3);border:1px solid var(--border2);border-radius:var(--radius);padding:10px 12px;margin-bottom:10px;font-family:var(--mono)">
+              <div style="color:var(--accent);font-weight:700;margin-bottom:4px">vehicles</div>
+              <div style="color:var(--text3)">id · plate_number · registered_at</div>
+            </div>
+            <div style="text-align:center;color:var(--text3);font-size:11px;margin:6px 0">↕ plate_number match (no FK —
+              by design)</div>
+            <div
+              style="background:var(--green3);border:1px solid rgba(16,185,129,.3);border-radius:var(--radius);padding:10px 12px;font-family:var(--mono)">
+              <div style="color:var(--green);font-weight:700;margin-bottom:4px">gate_logs</div>
+              <div style="color:var(--text3)">id · plate_number · status · confidence_score · snapshot_path · timestamp
+              </div>
+            </div>
+            <div
+              style="margin-top:12px;padding:10px;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border)">
+              <div style="font-weight:600;color:var(--text);margin-bottom:4px">Design decision:</div>
+              No FK between tables — gate_logs stores the raw plate string from OCR. This means unauthorized detections
+              (plates not in vehicles) are still fully logged without null foreign keys.
+            </div>
+          </div>
+        </div>
+
+        <!-- SAMPLE QUERIES -->
+        <div class="card">
+          <div class="card-title">💡 USEFUL QUERIES</div>
+          <div class="code-block" style="font-size:10px;margin-bottom:10px">
+            <span class="cm">-- All logs</span>
+            SELECT * FROM gate_logs
+            ORDER BY timestamp DESC;
+
+            <span class="cm">-- Only unauthorized attempts</span>
+            SELECT * FROM gate_logs
+            WHERE status = <span class="str">'UNAUTHORIZED'</span>
+            ORDER BY timestamp DESC;
+
+            <span class="cm">-- Count by status today</span>
+            SELECT status, COUNT(*) FROM gate_logs
+            WHERE DATE(timestamp) = CURRENT_DATE
+            GROUP BY status;
+
+            <span class="cm">-- Vehicles with most detections</span>
+            SELECT plate_number, COUNT(*) as hits
+            FROM gate_logs GROUP BY plate_number
+            ORDER BY hits DESC LIMIT 10;
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== API DOCS ====== -->
+  <div class="page" id="page-api">
+    <div class="sec-header">
+      <div class="sec-title">REST API Documentation</div>
+      <div class="sec-sub">FastAPI (Python) — Base URL: <span
+          style="font-family:var(--mono);color:var(--accent)">http://localhost:8000</span></div>
+    </div>
+    <div class="sub-tabs">
+      <div class="sub-tab active" onclick="showApiTab('authorize',this)">🔐 Authorize</div>
+      <div class="sub-tab" onclick="showApiTab('vehicles',this)">🚗 Vehicles</div>
+      <div class="sub-tab" onclick="showApiTab('logs',this)">📋 Logs</div>
+      <div class="sub-tab" onclick="showApiTab('gates',this)">🔒 Gates</div>
+    </div>
+
+    <div id="api-authorize">
+      <div class="api-endpoint">
+        <div class="api-header" onclick="toggleApi(this)">
+          <span class="method-badge POST">POST</span>
+          <span class="api-path">/api/authorize</span>
+          <span class="api-desc">Core endpoint — OCR pipeline calls this per detection</span>
+        </div>
+        <div class="api-body">
+          <div class="code-block">
+            <span class="cm"># Request — sent by partner's OCR pipeline</span>
+            {
+            <span class="str">"plate_number"</span>: <span class="str">"KL07BH1234"</span>,
+            <span class="str">"confidence_score"</span>: <span class="nb">92.5</span>,
+            <span class="str">"snapshot_path"</span>: <span class="str">"frames/frame_001.jpg"</span>
+            }
+
+            <span class="cm"># Response — AUTHORIZED (plate found in vehicles table)</span>
+            {
+            <span class="str">"log_id"</span>: <span class="nb">145</span>,
+            <span class="str">"plate_number"</span>: <span class="str">"KL07BH1234"</span>,
+            <span class="str">"status"</span>: <span class="str">"AUTHORIZED"</span>,
+            <span class="str">"timestamp"</span>: <span class="str">"2025-05-19T10:34:22"</span>
+            }
+
+            <span class="cm"># Response — UNAUTHORIZED (plate NOT in vehicles table)</span>
+            {
+            <span class="str">"log_id"</span>: <span class="nb">146</span>,
+            <span class="str">"plate_number"</span>: <span class="str">"KL05AX9999"</span>,
+            <span class="str">"status"</span>: <span class="str">"UNAUTHORIZED"</span>,
+            <span class="str">"timestamp"</span>: <span class="str">"2025-05-19T10:36:05"</span>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="api-vehicles" style="display:none">
+      <div class="api-endpoint">
+        <div class="api-header" onclick="toggleApi(this)">
+          <span class="method-badge GET">GET</span>
+          <span class="api-path">/api/vehicles</span>
+          <span class="api-desc">List all whitelisted plates</span>
+        </div>
+        <div class="api-body">
+          <div class="code-block">
+            <span class="cm"># Response</span>
+            [
+            {<span class="str">"id"</span>: <span class="nb">1</span>, <span class="str">"plate_number"</span>: <span
+              class="str">"KL07BH1234"</span>, <span class="str">"registered_at"</span>: <span
+              class="str">"2025-05-01T09:00:00"</span>},
+            {<span class="str">"id"</span>: <span class="nb">2</span>, <span class="str">"plate_number"</span>: <span
+              class="str">"KL09CA5678"</span>, <span class="str">"registered_at"</span>: <span
+              class="str">"2025-05-02T10:30:00"</span>}
+            ]
+          </div>
+        </div>
+      </div>
+      <div class="api-endpoint">
+        <div class="api-header" onclick="toggleApi(this)">
+          <span class="method-badge POST">POST</span>
+          <span class="api-path">/api/vehicles</span>
+          <span class="api-desc">Add a plate to the whitelist</span>
+        </div>
+        <div class="api-body">
+          <div class="code-block">
+            <span class="cm"># Request</span>
+            {<span class="str">"plate_number"</span>: <span class="str">"MH12CD5678"</span>}
+
+            <span class="cm"># Response 200</span>
+            {<span class="str">"message"</span>: <span class="str">"Vehicle added"</span>, <span
+              class="str">"vehicle"</span>: {<span class="str">"id"</span>: <span class="nb">3</span>, <span
+              class="str">"plate_number"</span>: <span class="str">"MH12CD5678"</span>}}
+
+            <span class="cm"># Response 400 — already registered</span>
+            {<span class="str">"detail"</span>: <span class="str">"Plate already registered"</span>}
+          </div>
+        </div>
+      </div>
+      <div class="api-endpoint">
+        <div class="api-header" onclick="toggleApi(this)">
+          <span class="method-badge DELETE">DELETE</span>
+          <span class="api-path">/api/vehicles/{plate_number}</span>
+          <span class="api-desc">Remove a plate from the whitelist</span>
+        </div>
+        <div class="api-body">
+          <div class="code-block">
+            <span class="cm"># DELETE /api/vehicles/MH12CD5678</span>
+            {<span class="str">"message"</span>: <span class="str">"MH12CD5678 removed from whitelist"</span>}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="api-logs" style="display:none">
+      <div class="api-endpoint">
+        <div class="api-header" onclick="toggleApi(this)">
+          <span class="method-badge GET">GET</span>
+          <span class="api-path">/api/logs</span>
+          <span class="api-desc">All gate logs, newest first</span>
+        </div>
+        <div class="api-body">
+          <div class="code-block">
+            <span class="cm"># Response</span>
+            [
+            {
+            <span class="str">"id"</span>: <span class="nb">145</span>,
+            <span class="str">"plate_number"</span>: <span class="str">"KL07BH1234"</span>,
+            <span class="str">"status"</span>: <span class="str">"AUTHORIZED"</span>,
+            <span class="str">"confidence_score"</span>: <span class="nb">92.5</span>,
+            <span class="str">"snapshot_path"</span>: <span class="str">"frames/frame_001.jpg"</span>,
+            <span class="str">"timestamp"</span>: <span class="str">"2025-05-19T10:34:22"</span>
+            },
+            ...
+            ]
+          </div>
+        </div>
+      </div>
+      <div class="api-endpoint">
+        <div class="api-header" onclick="toggleApi(this)">
+          <span class="method-badge GET">GET</span>
+          <span class="api-path">/api/logs/unauthorized</span>
+          <span class="api-desc">Only unauthorized attempts</span>
+        </div>
+        <div class="api-body">
+          <div class="code-block">
+            <span class="cm"># Same shape as /api/logs, filtered to status=UNAUTHORIZED</span>
+            <span class="cm"># Used by the Alerts page and unauthorized panel</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="api-gates" style="display:none">
+      <div class="api-endpoint">
+        <div class="api-header" onclick="toggleApi(this)">
+          <span class="method-badge GET">GET</span>
+          <span class="api-path">/api/gates</span>
+          <span class="api-desc">Gate statuses (simulated in demo)</span>
+        </div>
+        <div class="api-body">
+          <div class="code-block">
+            [
+            {<span class="str">"id"</span>: <span class="nb">1</span>, <span class="str">"name"</span>: <span
+              class="str">"Main Gate"</span>, <span class="str">"status"</span>: <span class="str">"OPEN"</span>},
+            {<span class="str">"id"</span>: <span class="nb">2</span>, <span class="str">"name"</span>: <span
+              class="str">"Side Gate"</span>, <span class="str">"status"</span>: <span class="str">"CLOSED"</span>}
+            ]
+          </div>
+        </div>
+      </div>
+      <div class="api-endpoint">
+        <div class="api-header" onclick="toggleApi(this)">
+          <span class="method-badge POST">POST</span>
+          <span class="api-path">/api/gates/{id}/control</span>
+          <span class="api-desc">Trigger gate open/close (MQTT → ESP32)</span>
+        </div>
+        <div class="api-body">
+          <div class="code-block">
+            {<span class="str">"action"</span>: <span class="str">"OPEN"</span>, <span
+              class="str">"duration_seconds"</span>: <span class="nb">8</span>}
+            <span class="cm"># Publishes to MQTT topic: gate/{id}/command → ESP32 servo</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== AI PIPELINE ====== -->
+  <div class="page" id="page-pipeline">
+    <div class="sec-header">
+      <div class="sec-title">AI / ML Pipeline</div>
+      <div class="sec-sub">Camera → vehicle detection → plate localization → OCR → authorization — under 500ms</div>
+    </div>
+    <div class="grid2">
+      <div>
+        <div class="card" style="margin-bottom:14px">
+          <div class="card-title">⚙️ PIPELINE STAGES</div>
+          <div class="pipe-step">
+            <div class="pipe-num">1</div>
+            <div class="pipe-content">
+              <div class="pipe-title">Video Frame Capture</div>
+              <div class="pipe-desc">RTSP/HTTP stream captured at 15–30 FPS via OpenCV. Frames resized to 640×640 and
+                pushed to processing queue. Supports webcam for demo mode.</div>
+              <div class="pipe-tech"><span class="tech-tag">OpenCV</span><span class="tech-tag">RTSP</span><span
+                  class="tech-tag">asyncio</span></div>
+            </div>
+          </div>
+          <div class="pipe-step">
+            <div class="pipe-num">2</div>
+            <div class="pipe-content">
+              <div class="pipe-title">Vehicle Detection (YOLOv8)</div>
+              <div class="pipe-desc">YOLOv8n detects vehicles with bounding boxes. Only car/truck/motorcycle classes are
+                processed. Frames with no vehicle are skipped immediately.</div>
+              <div class="pipe-tech"><span class="tech-tag">YOLOv8</span><span class="tech-tag">Ultralytics</span><span
+                  class="tech-tag">CUDA</span></div>
+            </div>
+          </div>
+          <div class="pipe-step">
+            <div class="pipe-num">3</div>
+            <div class="pipe-content">
+              <div class="pipe-title">License Plate Localization</div>
+              <div class="pipe-desc">Second YOLOv8 model fine-tuned on Indian plates finds the plate ROI within the
+                vehicle bounding box. Perspective correction handles angled shots.</div>
+              <div class="pipe-tech"><span class="tech-tag">YOLOv8-LP</span><span
+                  class="tech-tag">warpPerspective</span><span class="tech-tag">Custom dataset</span></div>
+            </div>
+          </div>
+          <div class="pipe-step">
+            <div class="pipe-num">4</div>
+            <div class="pipe-content">
+              <div class="pipe-title">Image Preprocessing</div>
+              <div class="pipe-desc">Plate ROI enhanced: grayscale → CLAHE contrast → morphological ops → Gaussian
+                denoise. Handles IR/night camera input for low-light conditions.</div>
+              <div class="pipe-tech"><span class="tech-tag">OpenCV CLAHE</span><span class="tech-tag">Pillow</span>
+              </div>
+            </div>
+          </div>
+          <div class="pipe-step">
+            <div class="pipe-num">5</div>
+            <div class="pipe-content">
+              <div class="pipe-title">OCR Extraction</div>
+              <div class="pipe-desc">EasyOCR (primary) + Tesseract (fallback) extract text. Results validated against
+                Indian plate regex. Fuzzy matching corrects common OCR errors (0↔O, 1↔I, 8↔B).</div>
+              <div class="pipe-tech"><span class="tech-tag">EasyOCR</span><span class="tech-tag">Tesseract 5</span><span
+                  class="tech-tag">regex</span><span class="tech-tag">fuzzywuzzy</span></div>
+            </div>
+          </div>
+          <div class="pipe-step">
+            <div class="pipe-num">6</div>
+            <div class="pipe-content">
+              <div class="pipe-title">Authorization + Log</div>
+              <div class="pipe-desc">Verified plate hits POST /api/authorize. Backend checks vehicles table, inserts
+                into gate_logs, returns AUTHORIZED or UNAUTHORIZED. Gate command sent via MQTT.</div>
+              <div class="pipe-tech"><span class="tech-tag">FastAPI</span><span class="tech-tag">PostgreSQL</span><span
+                  class="tech-tag">MQTT</span><span class="tech-tag">ESP32</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="card" style="margin-bottom:14px">
+          <div class="card-title">📊 PERFORMANCE TARGETS</div>
+          <div style="margin-bottom:10px">
+            <div class="flex" style="justify-content:space-between;margin-bottom:3px"><span style="font-size:11px">Frame
+                capture → detection</span><span
+                style="font-family:var(--mono);font-size:10px;color:var(--green)">~80ms</span></div>
+            <div class="prog-bar">
+              <div class="prog-fill" style="width:23%;background:var(--green2)"></div>
+            </div>
+          </div>
+          <div style="margin-bottom:10px">
+            <div class="flex" style="justify-content:space-between;margin-bottom:3px"><span style="font-size:11px">Plate
+                localization</span><span style="font-family:var(--mono);font-size:10px;color:var(--green)">~60ms</span>
+            </div>
+            <div class="prog-bar">
+              <div class="prog-fill" style="width:17%;background:var(--green2)"></div>
+            </div>
+          </div>
+          <div style="margin-bottom:10px">
+            <div class="flex" style="justify-content:space-between;margin-bottom:3px"><span style="font-size:11px">OCR
+                extraction</span><span style="font-family:var(--mono);font-size:10px;color:var(--amber)">~120ms</span>
+            </div>
+            <div class="prog-bar">
+              <div class="prog-fill" style="width:34%;background:var(--amber2)"></div>
+            </div>
+          </div>
+          <div style="margin-bottom:10px">
+            <div class="flex" style="justify-content:space-between;margin-bottom:3px"><span style="font-size:11px">DB
+                authorization lookup</span><span
+                style="font-family:var(--mono);font-size:10px;color:var(--green)">~8ms</span></div>
+            <div class="prog-bar">
+              <div class="prog-fill" style="width:2%;background:var(--green2)"></div>
+            </div>
+          </div>
+          <div style="margin-bottom:10px">
+            <div class="flex" style="justify-content:space-between;margin-bottom:3px"><span style="font-size:11px">MQTT
+                gate trigger</span><span style="font-family:var(--mono);font-size:10px;color:var(--green)">~15ms</span>
+            </div>
+            <div class="prog-bar">
+              <div class="prog-fill" style="width:4%;background:var(--green2)"></div>
+            </div>
+          </div>
+          <div style="border-top:1px solid var(--border);margin-top:12px;padding-top:12px">
+            <div class="flex" style="justify-content:space-between;margin-bottom:4px"><span
+                style="font-size:12px;font-weight:600">Total end-to-end</span><span
+                style="font-family:var(--mono);font-size:12px;color:var(--accent);font-weight:700">~350ms</span></div>
+            <div class="prog-bar">
+              <div class="prog-fill" style="width:70%;background:linear-gradient(90deg,var(--green2),var(--amber2))">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card" style="margin-bottom:14px">
+          <div class="card-title">🔧 HARDWARE COMPONENTS</div>
+          <table class="tbl">
+            <thead>
+              <tr>
+                <th>Component</th>
+                <th>Role</th>
+                <th>Interface</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Webcam / IP Camera</td>
+                <td>Video capture</td>
+                <td>USB / RTSP</td>
+              </tr>
+              <tr>
+                <td>ESP32 / Arduino</td>
+                <td>Gate relay control</td>
+                <td>MQTT / WiFi</td>
+              </tr>
+              <tr>
+                <td>Servo / DC Motor</td>
+                <td>Boom barrier</td>
+                <td>PWM signal</td>
+              </tr>
+              <tr>
+                <td>IR Sensors</td>
+                <td>Vehicle presence detect</td>
+                <td>GPIO digital</td>
+              </tr>
+              <tr>
+                <td>Laptop / RPi 4</td>
+                <td>AI inference + backend</td>
+                <td>Local network</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card">
+          <div class="card-title">💻 ESP32 GATE CONTROLLER (C++)</div>
+          <div class="code-block" style="font-size:10px">
+            <span class="cm">// ESP32 MQTT Gate Controller</span>
+            <span class="kw">#include</span> <span class="str">&lt;WiFi.h&gt;</span>
+            <span class="kw">#include</span> <span class="str">&lt;PubSubClient.h&gt;</span>
+            <span class="kw">#include</span> <span class="str">&lt;ESP32Servo.h&gt;</span>
+
+            Servo gateServo;
+            <span class="kw">const int</span> SERVO_PIN = 18;
+
+            <span class="fn">void</span> mqttCallback(<span class="fn">char</span>* topic, <span class="fn">byte</span>*
+            payload, <span class="fn">unsigned int</span> len) {
+            String cmd = String((char*)payload).substring(0, len);
+            <span class="kw">if</span> (cmd == <span class="str">"OPEN"</span>) {
+            gateServo.write(90); <span class="cm">// Open position</span>
+            delay(8000); <span class="cm">// Hold 8 seconds</span>
+            gateServo.write(0); <span class="cm">// Auto-close</span>
+            } <span class="kw">else if</span> (cmd == <span class="str">"FORCE_CLOSE"</span>) {
+            gateServo.write(0);
+            }
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== PROJECT STRUCTURE ====== -->
+  <div class="page" id="page-structure">
+    <div class="sec-header">
+      <div class="sec-title">Project Structure & Tech Stack</div>
+      <div class="sec-sub">Flat layout optimized for a 2-person student project</div>
+    </div>
+    <div class="grid2">
+      <div>
+        <div class="card" style="margin-bottom:14px">
+          <div class="card-title">📁 FOLDER STRUCTURE</div>
+          <div class="folder">
+            <span class="dir">NPR/</span>
+            ├── <span class="file">.env</span> <span class="cm"># DATABASE_URL</span>
+            ├── <span class="file">db.py</span> <span class="cm"># SQLAlchemy engine + session</span>
+            ├── <span class="file">models.py</span> <span class="cm"># Vehicle + GateLog ORM</span>
+            ├── <span class="file">auth.py</span> <span class="cm"># check_and_log() logic</span>
+            ├── <span class="file">main.py</span> <span class="cm"># FastAPI app + all endpoints</span>
+            ├── <span class="file">requirements.txt</span>
+            │
+            ├── <span class="dir">ai_pipeline/</span> <span class="cm"># Partner's module</span>
+            │ ├── <span class="file">pipeline.py</span> <span class="cm"># Frame → OCR orchestrator</span>
+            │ ├── <span class="file">detector.py</span> <span class="cm"># YOLOv8 vehicle detect</span>
+            │ ├── <span class="file">plate_localizer.py</span><span class="cm"># YOLOv8 plate ROI</span>
+            │ ├── <span class="file">ocr_engine.py</span> <span class="cm"># EasyOCR + Tesseract</span>
+            │ └── <span class="dir">models/</span> <span class="cm"># .pt YOLO weights</span>
+            │
+            ├── <span class="dir">frames/</span> <span class="cm"># Saved plate snapshots</span>
+            │
+            └── <span class="dir">frontend/</span> <span class="cm"># Dashboard (this file)</span>
+            └── <span class="file">index.html</span>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="card" style="margin-bottom:14px">
+          <div class="card-title">🧱 TECH STACK</div>
+          <table class="tbl">
+            <thead>
+              <tr>
+                <th>Layer</th>
+                <th>Technology</th>
+                <th>Purpose</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Backend</td>
+                <td style="color:var(--green)">Python FastAPI</td>
+                <td>REST API server</td>
+              </tr>
+              <tr>
+                <td>ORM</td>
+                <td style="color:var(--green)">SQLAlchemy 2.0</td>
+                <td>DB models + queries</td>
+              </tr>
+              <tr>
+                <td>Database</td>
+                <td style="color:var(--blue)">PostgreSQL 17</td>
+                <td>vehicles + gate_logs</td>
+              </tr>
+              <tr>
+                <td>DB Driver</td>
+                <td style="color:var(--blue)">psycopg2-binary</td>
+                <td>Python → Postgres</td>
+              </tr>
+              <tr>
+                <td>Env Config</td>
+                <td style="color:var(--text2)">python-dotenv</td>
+                <td>.env DATABASE_URL</td>
+              </tr>
+              <tr>
+                <td>Vehicle AI</td>
+                <td style="color:var(--amber)">YOLOv8 Ultralytics</td>
+                <td>Detection model</td>
+              </tr>
+              <tr>
+                <td>Plate AI</td>
+                <td style="color:var(--amber)">YOLOv8-LP (custom)</td>
+                <td>Plate localization</td>
+              </tr>
+              <tr>
+                <td>OCR</td>
+                <td style="color:var(--amber)">EasyOCR + Tesseract</td>
+                <td>Text extraction</td>
+              </tr>
+              <tr>
+                <td>Computer Vision</td>
+                <td style="color:var(--amber)">OpenCV</td>
+                <td>Frame + preprocessing</td>
+              </tr>
+              <tr>
+                <td>Frontend</td>
+                <td style="color:var(--accent)">HTML + JS</td>
+                <td>Admin dashboard</td>
+              </tr>
+              <tr>
+                <td>Gate Control</td>
+                <td style="color:var(--purple)">MQTT + ESP32</td>
+                <td>Physical gate trigger</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card">
+          <div class="card-title">🚀 FUTURE ENHANCEMENTS</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <div class="future-card">
+              <div class="future-card-title">👤 Face Recognition</div>
+              <div class="future-card-sub">Dual-auth: plate + face via InsightFace</div>
+            </div>
+            <div class="future-card">
+              <div class="future-card-title">🎫 Visitor QR Passes</div>
+              <div class="future-card-sub">Time-limited temp access codes</div>
+            </div>
+            <div class="future-card">
+              <div class="future-card-title">🅿️ Parking Management</div>
+              <div class="future-card-sub">Slot tracking + occupancy display</div>
+            </div>
+            <div class="future-card">
+              <div class="future-card-title">☁️ Cloud Dashboard</div>
+              <div class="future-card-sub">Multi-site BigQuery analytics</div>
+            </div>
+            <div class="future-card">
+              <div class="future-card-title">📱 Mobile App</div>
+              <div class="future-card-sub">React Native guard patrol app</div>
+            </div>
+            <div class="future-card">
+              <div class="future-card-title">🤖 Anomaly Detection</div>
+              <div class="future-card-sub">Isolation Forest on access patterns</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== IMPL GUIDE ====== -->
+  <div class="page" id="page-impl">
+    <div class="sec-header">
+      <div class="sec-title">Implementation Guide</div>
+      <div class="sec-sub">Step-by-step from your current working backend to a complete demo</div>
+    </div>
+    <div class="grid2">
+      <div>
+        <div class="impl-step">
+          <div class="impl-step-head">
+            <div class="impl-num">1</div>
+            <div class="impl-title">Backend already done ✅</div>
+          </div>
+          <div class="code-block" style="font-size:10px">
+            <span class="cm"># What's working right now</span>
+            uvicorn main:app --reload
+
+            <span class="cm"># Endpoints live:</span>
+            POST /api/authorize
+            GET /api/logs
+            GET /api/logs/unauthorized
+            GET /api/vehicles
+            POST /api/vehicles
+            DELETE /api/vehicles/{plate}
+          </div>
+        </div>
+        <div class="impl-step">
+          <div class="impl-step-head">
+            <div class="impl-num">2</div>
+            <div class="impl-title">Connect Dashboard to API</div>
+          </div>
+          <div class="code-block" style="font-size:10px">
+            <span class="cm">// Poll GET /api/logs every 3 seconds</span>
+            <span class="fn">async function</span> fetchLogs() {
+            <span class="kw">const</span> res = <span class="kw">await</span> fetch(<span
+              class="str">'http://localhost:8000/api/logs'</span>);
+            <span class="kw">const</span> data = <span class="kw">await</span> res.json();
+            renderLogs(data); <span class="cm">// update table</span>
+            }
+            setInterval(fetchLogs, <span class="nb">3000</span>);
+          </div>
+        </div>
+        <div class="impl-step">
+          <div class="impl-step-head">
+            <div class="impl-num">3</div>
+            <div class="impl-title">AI Pipeline Setup (Partner)</div>
+          </div>
+          <div class="code-block" style="font-size:10px">
+            <span class="cm"># Install AI deps</span>
+            pip install ultralytics easyocr opencv-python
+            pip install pytesseract python-multipart
+
+            <span class="cm"># Download YOLOv8</span>
+            python -c <span class="str">"from ultralytics import YOLO; YOLO('yolov8n.pt')"</span>
+
+            <span class="cm"># Test pipeline with single image</span>
+            python ai_pipeline/pipeline.py --test --image test.jpg
+          </div>
+        </div>
+        <div class="impl-step">
+          <div class="impl-step-head">
+            <div class="impl-num">4</div>
+            <div class="impl-title">Hardware Wiring (ESP32)</div>
+          </div>
+          <div style="font-size:11px;color:var(--text2);line-height:1.9">
+            1. ESP32 GPIO 18 → Servo signal wire (yellow)<br>
+            2. 5V → Servo power (red) · GND → Servo ground (black)<br>
+            3. IR sensor OUT → GPIO 34 (pull-up enabled)<br>
+            4. Upload <code
+              style="background:var(--bg4);padding:1px 5px;border-radius:3px;font-family:var(--mono)">gate_controller.ino</code>
+            via Arduino IDE<br>
+            5. Set WiFi SSID + MQTT broker IP in sketch<br>
+            6. Test: <code
+              style="background:var(--bg4);padding:1px 5px;border-radius:3px;font-family:var(--mono)">mosquitto_pub -t gate/1/command -m OPEN</code>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="impl-step">
+          <div class="impl-step-head">
+            <div class="impl-num">5</div>
+            <div class="impl-title">Demo Day Flow</div>
+          </div>
+          <div style="font-size:11px;color:var(--text2);line-height:2">
+            <div
+              style="background:var(--accent3);border-radius:var(--radius);padding:12px;border:1px solid var(--border2)">
+              <div style="font-weight:600;color:var(--accent);margin-bottom:8px">Live Demo Script:</div>
+              1. Start uvicorn backend + open dashboard<br>
+              2. Show whitelist (vehicles table) with pre-loaded plates<br>
+              3. Partner runs camera → YOLO detects car → EasyOCR reads plate<br>
+              4. POST /api/authorize fires → DB checks whitelist<br>
+              5. ✅ AUTHORIZED → gate animation opens → log appears live<br>
+              6. Remove plate from whitelist, re-run same car<br>
+              7. ❌ UNAUTHORIZED → red alert card appears on dashboard<br>
+              8. Show snapshot stored in frames/<br>
+              9. Export CSV from logs page<br>
+            </div>
+          </div>
+        </div>
+        <div class="impl-step">
+          <div class="impl-step-head">
+            <div class="impl-num">6</div>
+            <div class="impl-title">Camera Config (cameras.yaml)</div>
+          </div>
+          <div class="code-block" style="font-size:10px">
+            cameras:
+            - id: 1
+            name: <span class="str">"Main Gate"</span>
+            url: <span class="str">0</span> <span class="cm"># 0 = webcam for demo</span>
+            fps: 15
+            - id: 2
+            name: <span class="str">"Secondary"</span>
+            url: <span class="str">"rtsp://192.168.1.100:554/stream"</span>
+            fps: 15
+          </div>
+        </div>
+        <div class="impl-step">
+          <div class="impl-step-head">
+            <div class="impl-num">7</div>
+            <div class="impl-title">Dataset Recommendations</div>
+          </div>
+          <table class="tbl">
+            <thead>
+              <tr>
+                <th>Dataset</th>
+                <th>Source</th>
+                <th>Use</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Indian LP Detection</td>
+                <td>Roboflow Universe</td>
+                <td>Plate localization</td>
+              </tr>
+              <tr>
+                <td>ANPR Dataset</td>
+                <td>Kaggle</td>
+                <td>OCR fine-tuning</td>
+              </tr>
+              <tr>
+                <td>Vehicle Detection</td>
+                <td>COCO subset</td>
+                <td>YOLOv8 base</td>
+              </tr>
+              <tr>
+                <td>Synthetic LP Gen</td>
+                <td>plateGen Python</td>
+                <td>Data augmentation</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API = "http://127.0.0.1:8000";
+
+    // ── CLOCK ─────────────────────────────────────────────────
+    function updateClock() {
+      const now = new Date();
+      document.getElementById('clock').textContent =
+        now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    }
+    setInterval(updateClock, 1000); updateClock();
+
+    // ── PAGE NAV ──────────────────────────────────────────────
+    function showPage(id, el) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+      document.getElementById('page-' + id).classList.add('active');
+      el.classList.add('active');
+      if (id === 'logs') loadLogs();
+      if (id === 'alerts') renderAlerts();
+      if (id === 'whitelist') renderWhitelist();
+    }
+
+    // ── LOGS ──────────────────────────────────────────────────
+    function renderLogs(data) {
+      const tb = document.getElementById('logs-body');
+      if (!tb) return;
+      tb.innerHTML = data.map(r => `<tr>
+    <td style="font-family:var(--mono);font-size:10px;color:var(--text3)">${r.ts}</td>
+    <td><span class="plate">${r.plate}</span></td>
+    <td><span class="badge ${r.status === 'AUTHORIZED' ? 'auth' : 'deny'}">${r.status}</span></td>
+    <td>
+      <div style="font-family:var(--mono);font-size:11px;font-weight:600;color:${r.conf > 0.8 ? 'var(--green)' : r.conf > 0.65 ? 'var(--amber)' : 'var(--red)'}">${(r.conf * 100).toFixed(0)}%</div>
+      <div style="height:3px;width:${(r.conf * 100).toFixed(0)}%;background:${r.conf > 0.8 ? 'var(--green2)' : r.conf > 0.65 ? 'var(--amber2)' : 'var(--red2)'};border-radius:2px;margin-top:3px;max-width:80px"></div>
+    </td>
+    <td>
+${r.snapshot
+          ?
+          `<img
+src="${API}/${r.snapshot}"
+style="
+width:70px;
+height:50px;
+object-fit:cover;
+border-radius:6px">`
+          :
+          '-'}
+</td>
+  </tr>`).join('');
+    }
+
+    async function loadLogs() {
+      try {
+        const res =
+          await fetch(
+            `${API}/api/logs`
+          );
+        const data =
+          await res.json();
+        document.getElementById('stat-entries').textContent = data.length;
+        document.getElementById('stat-auth').textContent = data.filter(r => r.status === 'AUTHORIZED').length;
+        document.getElementById('stat-deny').textContent = data.filter(r => r.status === 'UNAUTHORIZED').length;
+        const sp =
+          document.getElementById(
+            'search-plate'
+          )?.value;
+
+        const fs =
+          document.getElementById(
+            'filter-status'
+          )?.value;
+
+        const fd =
+          document.getElementById(
+            'filter-date'
+          )?.value;
+
+        if (sp || fs || fd) {
+          filterLogs();
+        } else {
+          renderLogs(
+            data.map(r => ({
+              ts: r.timestamp,
+              plate: r.plate_number,
+              status: r.status,
+              conf: r.confidence_score,
+              snapshot: r.snapshot_path
+            }))
+          );
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    }
+
+    async function filterLogs() {
+      const sp =
+        (
+          document
+            .getElementById(
+              'search-plate'
+            )
+            .value || ''
+        )
+          .toUpperCase();
+      const fs =
+        document
+          .getElementById(
+            'filter-status'
+          )
+          .value;
+      const fd =
+        document
+          .getElementById(
+            'filter-date'
+          )
+          .value;
+      try {
+        const res =
+          await fetch(
+            `${API}/api/logs`
+          );
+        let data =
+          await res.json();
+        data =
+          data.filter(r =>
+            (!sp ||
+              r.plate_number.includes(sp))
+            &&
+            (!fs ||
+              r.status === fs)
+            &&
+            (!fd ||
+              r.timestamp.startsWith(fd))
+          );
+        renderLogs(
+          data.map(r => ({
+            ts: r.timestamp,
+            plate: r.plate_number,
+            status: r.status,
+            conf: r.confidence_score,
+            snapshot: r.snapshot_path
+          }))
+        );
+      } catch (err) {
+        console.log(err);
+      }
+    }
+
+    function exportLogs() {
+      alert('CSV export triggered — in production this downloads gate_logs as a .csv file');
+    }
+
+    async function renderAlerts() {
+
+      const active =
+        document.getElementById(
+          'active-alerts'
+        );
+
+      const hist =
+        document.getElementById(
+          'alert-history'
+        );
+
+      if (!active) return;
+
+      try {
+
+        const res =
+          await fetch(
+            `${API}/api/logs/unauthorized`
+          );
+
+        const data =
+          await res.json();
+
+        if (data.length === 0) {
+
+          active.innerHTML =
+            `<div style="
+                color:var(--text3);
+                padding:12px">
+                No unauthorized alerts
+            </div>`;
+
+          hist.innerHTML = '';
+          return;
+        }
+
+        active.innerHTML =
+          data.map(a => `
+            <div class="alert-item high">
+                <div class="flex"
+                     style="justify-content:space-between">
+                    <span class="badge deny">
+                        UNAUTHORIZED
+                    </span>
+                    <span class="alert-time">
+                        ${a.timestamp}
+                    </span>
+                </div>
+
+                <div class="alert-msg"
+                     style="margin-top:6px;
+                     font-weight:600">
+                     Unauthorized Access
+                </div>
+
+                <span class="alert-plate">
+                    ${a.plate_number}
+                </span>
+            </div>
+            `).join('');
+
+        hist.innerHTML =
+          active.innerHTML;
+
+      } catch (err) {
+        console.log(err);
+      }
+    }
+
+    // ── WHITELIST ─────────────────────────────────────────────
+    function renderWhitelist(data) {
+      const body =
+        document.getElementById(
+          'whitelist-body'
+        );
+      const count =
+        document.getElementById(
+          'wl-count'
+        );
+      if (!body) return;
+      count.textContent =
+        `${data.length} plates`;
+      body.innerHTML =
+        data.map((v, i) => `
+       <div class="wl-row">
+    <div class="flex">
+        <span style="
+            width:28px;
+            font-family:var(--mono);
+            color:var(--text3);
+            font-size:11px">
+            ${i + 1}.
+        </span>
+
+        <span class="plate">
+            ${v.plate_number}
+        </span>
+    </div>  
+            <div class="flex">
+                <span style="
+                  font-size:10px;
+                  color:var(--text3);
+                  font-family:var(--mono)">
+                    ${v.registered_at}
+                </span>
+                <button
+                  class="btn danger"
+                  onclick="removePlate(
+                    '${v.plate_number}'
+                  )">
+                    Remove
+                </button>
+            </div>
+        </div>
+    `).join('');
+    }
+
+    async function loadVehicles() {
+      try {
+        const res =
+          await fetch(
+            `${API}/api/vehicles`
+          );
+        const data =
+          await res.json();
+        renderWhitelist(data);
+        document.getElementById(
+          'stat-vehicles'
+        ).textContent =
+          data.length;
+      } catch (err) {
+        console.log(err);
+      }
+    }
+
+    async function addPlate() {
+      const input =
+        document.getElementById(
+          'new-plate'
+        );
+      const plate =
+        input.value
+          .toUpperCase()
+          .replace(/\s/g, '');
+      if (!plate) return;
+      try {
+        await fetch(
+          `${API}/api/vehicles`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type':
+                'application/json'
+            },
+            body: JSON.stringify({
+              plate_number: plate
+            })
+          }
+        );
+        input.value = '';
+        loadVehicles();
+      } catch (err) {
+        console.log(err);
+      }
+    }
+
+    async function removePlate(plate) {
+      try {
+        await fetch(
+          `${API}/api/vehicles/${plate}`,
+          {
+            method: 'DELETE'
+          }
+        );
+        loadVehicles();
+      } catch (err) {
+        console.log(err);
+      }
+    }
+
+    // ── GATE TOGGLE ──────────────────────────────────────────
+    const gateStates = { 1: true, 2: false };
+    function toggleGate(id) {
+      gateStates[id] = !gateStates[id];
+      const open = gateStates[id];
+      const vis = document.getElementById(`gate${id}-vis`);
+      const status = document.getElementById(`gate${id}-status`);
+      const btn = vis.nextElementSibling.nextElementSibling.nextElementSibling;
+      vis.textContent = open ? '🔓' : '🔒';
+      vis.className = 'gate-visual ' + (open ? 'open' : 'closed');
+      status.textContent = open ? 'OPEN' : 'CLOSED';
+      status.style.color = open ? 'var(--green)' : 'var(--text3)';
+      btn.className = 'gate-btn ' + (open ? 'close' : 'open');
+      btn.textContent = open ? 'CLOSE' : 'OPEN';
+    }
+
+    // ── MANUAL LOOKUP ────────────────────────────────────────
+    async function manualLookup() {
+
+      const raw =
+        document
+          .getElementById(
+            'manualPlate'
+          )
+          .value
+          .toUpperCase()
+          .replace(/\s/g, '');
+
+      const resBox =
+        document.getElementById(
+          'lookup-result'
+        );
+
+      if (!raw) return;
+
+      try {
+
+        const res =
+          await fetch(
+            `${API}/api/vehicles`
+          );
+
+        const data =
+          await res.json();
+
+        const found =
+          data.find(
+            v =>
+              v.plate_number === raw
+          );
+
+        if (found) {
+
+          resBox.innerHTML = `
+            <div style="
+                background:var(--green3);
+                border:1px solid rgba(16,185,129,.4);
+                border-radius:6px;
+                padding:10px">
+                <div style="
+                    color:var(--green);
+                    font-weight:600">
+                    ✓ AUTHORIZED
+                </div>
+            </div>`;
+
+        } else {
+
+          resBox.innerHTML = `
+            <div style="
+                background:var(--red3);
+                border:1px solid rgba(239,68,68,.4);
+                border-radius:6px;
+                padding:10px">
+                <div style="
+                    color:var(--red);
+                    font-weight:600">
+                    ✗ UNAUTHORIZED
+                </div>
+            </div>`;
+        }
+
+      } catch (err) {
+        console.log(err);
+      }
+    }
+
+    // ── API TABS ─────────────────────────────────────────────
+    function showApiTab(tab, el) {
+      ['authorize', 'vehicles', 'logs', 'gates'].forEach(t => {
+        const d = document.getElementById('api-' + t);
+        if (d) d.style.display = t === tab ? 'block' : 'none';
+      });
+      document.querySelectorAll('.sub-tab').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+    }
+
+    function toggleApi(header) {
+      header.nextElementSibling.classList.toggle('open');
+    }
+
+    // ── CAMERA SIMULATION ────────────────────────────────────
+    const camPlates = ['KL07BH1234', null, 'KL09CA5678', null, 'KL05AX9999', null];
+    let camIdx = 0;
+    function updateCameras() {
+      camIdx = (camIdx + 1) % camPlates.length;
+      const pl = camPlates[camIdx];
+      const p1 = document.getElementById('cam1-plate');
+      const s1 = document.getElementById('cam1-status');
+      const c1 = document.getElementById('cam1-conf');
+      if (p1 && s1) {
+        if (pl) {
+          p1.textContent = pl;
+          s1.textContent = '✓ PLATE DETECTED';
+          s1.style.color = '#a5b4fc';
+          const conf = Math.floor(82 + Math.random() * 17);
+          Array.from(c1.children).forEach((seg, i) => {
+            seg.className = 'conf-seg' + (i < Math.floor(conf / 10) ? ' fill' : '');
+          });
+        } else {
+          p1.textContent = '';
+          s1.textContent = 'Scanning...';
+          s1.style.color = '#64748b';
+          Array.from(c1.children).forEach(seg => seg.className = 'conf-seg');
+        }
+      }
+    }
+    setInterval(updateCameras, 2000);
+
+    // ── TRAFFIC CHART ────────────────────────────────────────
+    function buildChart() {
+      const chart = document.getElementById('traffic-chart');
+      if (!chart) return;
+      const auth = [0, 0, 0, 1, 5, 18, 35, 42, 38, 30, 22, 18, 28, 35, 32, 26, 22, 25, 30, 36, 28, 14, 6, 2];
+      const unauth = [0, 0, 0, 0, 1, 2, 3, 4, 2, 2, 1, 1, 2, 2, 1, 1, 1, 1, 2, 2, 1, 0, 0, 0];
+      chart.innerHTML = auth.map((h, i) => `
+    <div style="display:flex;flex-direction:column;align-items:center;flex:1;gap:2px;justify-content:flex-end">
+      <div class="bar auth" style="height:${Math.max(2, h * 1.7)}px" title="Authorized: ${h}"></div>
+      <div class="bar deny" style="height:${Math.max(0, unauth[i] * 9)}px" title="Unauthorized: ${unauth[i]}"></div>
+    </div>`).join('');
+    }
+    buildChart();
+    setInterval(loadLogs, 2000);
+    loadLogs();
+    loadVehicles();
+    renderAlerts();
+  </script>
+</body>
+
+</html>

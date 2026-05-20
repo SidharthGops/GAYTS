@@ -1,99 +1,173 @@
-"""
-main.py
-────────
-Entry point for the ANPR project.
+from fastapi import FastAPI, HTTPException, Depends
+from sqlalchemy.orm import Session
+from fastapi import UploadFile, File, Form
+import os
+from datetime import datetime
+from pydantic import BaseModel
+from fastapi.middleware.cors import CORSMiddleware
+from db import SessionLocal, engine
+from models import Vehicle, GateLog
+import models
+from fastapi.staticfiles import StaticFiles
 
-Usage
-─────
-Single image:
-    python main.py --image car.jpg
+# CREATE APP FIRST
+app = FastAPI(title="LPR Gate System API")
 
-Live webcam (default camera):
-    python main.py --live
+app.mount(
+    "/frames",
+    StaticFiles(directory="frames"),
+    name="frames"
+)
 
-Live webcam (specific camera + debug output):
-    python main.py --live --camera 1 --debug
+# THEN CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-Custom model:
-    python main.py --live --model models/custom.pt
-"""
+models.Base.metadata.create_all(bind=engine)
 
-import argparse
-import sys
-import ocr
-import livecam
-def main() -> None:
-    parser = argparse.ArgumentParser(
-        description="ANPR System — YOLOv8 + EasyOCR"
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+
+# -----------------------------------------------
+# REQUEST BODY MODELS
+# -----------------------------------------------
+
+class AuthorizeRequest(BaseModel):
+    plate_number: str
+    confidence_score: float = 0.0
+    snapshot_path: str = None
+
+class AddVehicleRequest(BaseModel):
+    plate_number: str
+
+
+# -----------------------------------------------
+# ENDPOINTS
+# -----------------------------------------------
+
+@app.post("/api/authorize")
+async def authorize(
+    plate_number: str = Form(...),
+    confidence_score: float = Form(0),
+    snapshot: UploadFile = File(None),
+    db: Session = Depends(get_db)
+):
+
+    vehicle = db.query(Vehicle).filter(
+        Vehicle.plate_number == plate_number
+    ).first()
+
+    status = (
+        "AUTHORIZED"
+        if vehicle
+        else "UNAUTHORIZED"
     )
-    # ── Mode (mutually exclusive, one required) ───────────────────────────────
-    mode = parser.add_mutually_exclusive_group(required=True)
-    mode.add_argument(
-        "--image",
-        type=str,
-        metavar="PATH",
-        help="Path to a single image file",
-    )
-    mode.add_argument(
-        "--live",
-        action="store_true",
-        help="Run live webcam ANPR",
-    )
-    # ── Shared options ────────────────────────────────────────────────────────
-    parser.add_argument(
-        "--camera",
-        type=int,
-        default=0,
-        metavar="INDEX",
-        help="Camera device index for --live mode (default: 0)",
-    )
-    parser.add_argument(
-        "--model",
-        type=str,
-        default="models/best.pt",
-        metavar="PATH",
-        help="Path to YOLOv8 weights file (default: models/best.pt)",
-    )
-    parser.add_argument(
-        "--debug",
-        action="store_true",
-        help="Enable verbose OCR output and debug overlays",
-    )
-    args = parser.parse_args()
-    # ── Image mode ────────────────────────────────────────────────────────────
-    if args.image:
-        print("\n[MAIN] Running single-image ANPR...")
-        try:
-            ocr.run(args.image, debug=args.debug)
-        except KeyboardInterrupt:
-            print("\n[MAIN] Interrupted.")
-            sys.exit(0)
-        except Exception as e:
-            print(f"\n[MAIN] Error: {e}")
-            if args.debug:
-                raise
-            sys.exit(1)
-    # ── Live mode ─────────────────────────────────────────────────────────────
-    elif args.live:
-        print(
-            f"\n[MAIN] Starting live ANPR  "
-            f"camera={args.camera}  model={args.model}  debug={args.debug}"
+
+    snapshot_path = None
+
+    if snapshot:
+
+        os.makedirs(
+            "frames",
+            exist_ok=True
         )
-        try:
-            livecam.run(
-                camera_index = args.camera,
-                model_path   = args.model,
-                debug        = args.debug,
+
+        ext = snapshot.filename.split('.')[-1]
+
+        filename = (
+            f"{plate_number}_"
+            f"{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+            f".{ext}"
+        )
+
+        filepath = os.path.join(
+            "frames",
+            filename
+        )
+
+        with open(
+            filepath,
+            "wb"
+        ) as buffer:
+
+            buffer.write(
+                await snapshot.read()
             )
-        except KeyboardInterrupt:
-            print("\n[MAIN] Interrupted.")
-            sys.exit(0)
-        except Exception as e:
-            print(f"\n[MAIN] Error: {e}")
-            if args.debug:
-                raise
-            sys.exit(1)
+
+        snapshot_path = filepath
+
+    log = GateLog(
+        plate_number=plate_number,
+        status=status,
+        confidence_score=confidence_score,
+        snapshot_path=snapshot_path
+    )
+
+    db.add(log)
+    db.commit()
+    db.refresh(log)
+
+    return {
+        "log_id": log.id,
+        "status": status,
+        "snapshot_path": snapshot_path
+    }
 
 
-if __name__ == "__main__":
-    main()
+@app.get("/api/logs")
+def get_logs(db: Session = Depends(get_db)):
+    logs = db.query(GateLog).order_by(GateLog.timestamp.desc()).all()
+    return logs
+
+
+@app.get("/api/logs/unauthorized")
+def get_unauthorized(db: Session = Depends(get_db)):
+    logs = db.query(GateLog).filter(
+        GateLog.status == "UNAUTHORIZED"
+    ).order_by(GateLog.timestamp.desc()).all()
+    return logs
+
+
+@app.get("/api/vehicles")
+def get_vehicles(db: Session = Depends(get_db)):
+    return db.query(Vehicle).all()
+
+
+@app.post("/api/vehicles")
+def add_vehicle(request: AddVehicleRequest, db: Session = Depends(get_db)):
+    existing = db.query(Vehicle).filter(
+        Vehicle.plate_number == request.plate_number
+    ).first()
+
+    if existing:
+        raise HTTPException(status_code=400, detail="Plate already registered")
+
+    vehicle = Vehicle(plate_number=request.plate_number)
+    db.add(vehicle)
+    db.commit()
+    db.refresh(vehicle)
+    return {"message": "Vehicle added", "vehicle": vehicle}
+
+
+@app.delete("/api/vehicles/{plate_number}")
+def remove_vehicle(plate_number: str, db: Session = Depends(get_db)):
+    vehicle = db.query(Vehicle).filter(
+        Vehicle.plate_number == plate_number
+    ).first()
+
+    if not vehicle:
+        raise HTTPException(status_code=404, detail="Plate not found")
+
+    db.delete(vehicle)
+    db.commit()
+    return {"message": f"{plate_number} removed from whitelist"}
